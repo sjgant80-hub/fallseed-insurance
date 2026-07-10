@@ -159,22 +159,19 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -241,8 +238,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -259,8 +255,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -269,8 +264,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -279,8 +273,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -521,8 +514,7 @@ main{padding:24px 32px 80px;overflow-y:auto;max-width:1200px;margin:0 auto;width
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -594,11 +586,11 @@ const SEED_DEFAULT = {
  { pattern: 'insurance act 2015|fair presentation', answer: 'Insurance Act 2015 (commercial): duty of fair presentation. Disclose every material circumstance the insured knows or ought to know, or sufficient information to put a prudent insurer on enquiry.' },
  { pattern: 'prod|product oversight', answer: 'PROD: Product Oversight & Governance (FCA SYSC). Manufacturer & distributor obligations; target market; value assessment annually (PROD 4 for non-investment insurance).' },
  { pattern: 'consumer duty|fair value', answer: 'FCA Consumer Duty (PRIN 12): four outcomes incl. price & value. Fair-value assessments by manufacturers; distributors must check before recommending.' },
- { pattern: 'fos|ombud', answer: 'FOS: free to consumer & microenterprise. Award threshold £430,000 for acts after 1 Apr 2025. Final response within 8 weeks (15 days payments).' },
+ { pattern: 'fos|ombud', answer: 'FOS: free to consumer & microenterprise. Award threshold TBA for acts after 1 Apr 2025. Final response within 8 weeks (15 days payments).' },
  { pattern: 'cass 5|client money', answer: 'CASS 5: client money rules for insurance intermediaries. Statutory trust or non-statutory trust. Daily check; weekly recon; CMAR.' },
  { pattern: 'smcr|smf|conduct rules', answer: 'SM&CR for insurance intermediaries since 9 Dec 2019: Limited / Core / Enhanced classification; SMFs; Certification Regime; Conduct Rules for nearly all staff.' },
  { pattern: 'vulnerab|fg21', answer: 'FG21/1 vulnerable customers: identify drivers; adapt service; document; outcome monitor under Consumer Duty.' },
- { pattern: 'price walking|loyalty penalty|icobs 6b', answer: 'Price walking ban (ICOBS 6B since 1 Jan 2022): renewal price for home / motor must be no higher than equivalent-new-business price.' }
+ { pattern: 'price walking|loyalty penalty|icobs 6b', answer: 'Access walking ban (ICOBS 6B since 1 Jan 2022): renewal price for home / motor must be no higher than equivalent-new-business price.' }
  ],
  complianceItems: [
  'FCA authorisation (insurance distribution permissions)',
@@ -612,7 +604,7 @@ const SEED_DEFAULT = {
  'Complaints procedure + 8-week final response',
  'AML CDD for any IBIP / regulated activity in scope',
  'Privacy notice + Art.13 — UK GDPR',
- 'Price-walking compliance (home / motor) — ICOBS 6B',
+ 'Access-walking compliance (home / motor) — ICOBS 6B',
  'SM&CR Statements of Responsibilities'
  ],
  documentClauses: [
@@ -694,7 +686,7 @@ const PROVIDERS = [
  model: 'claude-sonnet-4-20250514', requiresKey: true, paid: true, defaultEnabled: false, supportsStream: true,
  pricePer1MIn: 3, pricePer1MOut: 15,
  signupUrl: 'https://console.anthropic.com/',
- note: 'Sonnet 4: ~£0.03/tool · highest quality codegen' }
+ note: 'Sonnet 4: ~TBA/tool · highest quality codegen' }
 ];
 
 // ═══════════════════════════════════════════════════════════════
